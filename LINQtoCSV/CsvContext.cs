@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace LINQtoCSV
 {
@@ -57,6 +60,263 @@ namespace LINQtoCSV
             return ReadData<T>(null, stream, fileDescription);
         }
 
+
+
+        /// <summary>
+        /// Ases the data set.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns></returns>
+        public System.Data.DataSet AsDataSet(string fileName)
+        {
+            return AsDataSet(fileName, new CsvFileDescription());
+        }
+
+        /// <summary>
+        /// Ases the data set.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="fileDescription">The file description.</param>
+        /// <returns></returns>
+        public System.Data.DataSet AsDataSet(string fileName, CsvFileDescription fileDescription)
+        {
+            bool useFirstRow = false;
+
+            //Throw error if we state we use columnnames AND we have skip first line
+            if (fileDescription.SkipFirstLine && fileDescription.FirstLineHasColumnNames)
+            {
+                throw new BadFirstLineHasColumnNamesValueException();
+            }
+
+            //If we have first line for column headers, we need to disable this for the processing as we need to read that row to build our column names
+            if (fileDescription.FirstLineHasColumnNames)
+            {
+                useFirstRow = true;
+                //Disable this - otherwise the first row is skipped  the first row so we can create datacolumns using the info
+                fileDescription.FirstLineHasColumnNames = false;
+            }
+
+            IEnumerable<DataSetDataRowItem> ie = ReadData<DataSetDataRowItem>(fileName, null, fileDescription);
+
+            return CreateDataSet(ie, useFirstRow, fileDescription.FileCultureInfo);
+        }
+
+        /// <summary>
+        /// Ases the data set.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns></returns>
+        public System.Data.DataSet AsDataSet(StreamReader stream)
+        {
+            return AsDataSet(stream, new CsvFileDescription());
+        }
+
+        /// <summary>
+        /// Ases the data set.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="fileDescription">The file description.</param>
+        /// <returns></returns>
+        public System.Data.DataSet AsDataSet(StreamReader stream, CsvFileDescription fileDescription)
+        {
+            bool useFirstRow = false;
+
+            //Throw error if we state we use columnnames AND we have skip first line
+            if (fileDescription.SkipFirstLine && fileDescription.FirstLineHasColumnNames)
+            {
+                throw new BadFirstLineHasColumnNamesValueException();
+            }
+
+            //If we have first line for column headers, we need to disable this for the processing as we need to read that row to build our column names
+            if (fileDescription.FirstLineHasColumnNames)
+            {
+                useFirstRow = true;
+                //Disable this - otherwise the first row is skipped  the first row so we can create datacolumns using the info
+                fileDescription.FirstLineHasColumnNames = false;
+            }
+
+            IEnumerable<DataSetDataRowItem> ie = ReadData<DataSetDataRowItem>(null, stream, fileDescription);
+
+            return CreateDataSet(ie, useFirstRow, fileDescription.FileCultureInfo);
+        }
+
+
+
+
+
+        /// <summary>
+        /// Ases the data table.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public System.Data.DataTable AsDataTable(string fileName, string sort = null)
+        {
+            return AsDataTable(fileName, new CsvFileDescription());
+        }
+
+        /// <summary>
+        /// Ases the data table.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="fileDescription">The file description.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        /// <exception cref="BadFirstLineHasColumnNamesValueException"></exception>
+        public System.Data.DataTable AsDataTable(string fileName, CsvFileDescription fileDescription, string sort = null)
+        {
+            bool useFirstRow = false;
+
+            //Throw error if we state we use columnnames AND we have skip first line
+            if (fileDescription.SkipFirstLine && fileDescription.FirstLineHasColumnNames)
+            {
+                throw new BadFirstLineHasColumnNamesValueException();
+            }
+
+            //If we have first line for column headers, we need to disable this for the processing as we need to read that row to build our column names
+            if (fileDescription.FirstLineHasColumnNames)
+            {
+                useFirstRow = true;
+                //Disable this - otherwise the first row is skipped  the first row so we can create datacolumns using the info
+                fileDescription.FirstLineHasColumnNames = false;
+            }
+
+            IEnumerable<DataSetDataRowItem> ie = ReadData<DataSetDataRowItem>(fileName, null, fileDescription);
+
+            DataSet results = CreateDataSet(ie, useFirstRow, fileDescription.FileCultureInfo);
+            DataTable resultsTable = results.Tables[0];
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                resultsTable = Sort(resultsTable, sort);
+            }
+
+            return resultsTable;
+        }
+
+
+        /// <summary>
+        /// Ases the data table.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        public System.Data.DataTable AsDataTable(StreamReader stream, string sort = null)
+        {
+            return AsDataTable(stream, new CsvFileDescription());
+        }
+
+
+        /// <summary>
+        /// Ases the data table.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="fileDescription">The file description.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        /// <exception cref="BadFirstLineHasColumnNamesValueException"></exception>
+        public System.Data.DataTable AsDataTable(StreamReader stream, CsvFileDescription fileDescription, string sort = null)
+        {
+            bool useFirstRow = false;
+
+            //Throw error if we state we use columnnames AND we have skip first line
+            if (fileDescription.SkipFirstLine && fileDescription.FirstLineHasColumnNames)
+            {
+                throw new BadFirstLineHasColumnNamesValueException();
+            }
+
+            //If we have first line for column headers, we need to disable this for the processing as we need to read that row to build our column names
+            if (fileDescription.FirstLineHasColumnNames)
+            {
+                useFirstRow = true;
+                //Disable this - otherwise the first row is skipped  the first row so we can create datacolumns using the info
+                fileDescription.FirstLineHasColumnNames = false;
+            }
+
+            IEnumerable<DataSetDataRowItem> ie = ReadData<DataSetDataRowItem>(null, stream, fileDescription);
+
+            DataSet results = CreateDataSet(ie, useFirstRow, fileDescription.FileCultureInfo);
+            DataTable resultsTable = results.Tables[0];
+
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                resultsTable = Sort(resultsTable, sort);
+            }
+
+            return resultsTable;
+        }
+
+
+        /// <summary>
+        /// Sorts the specified source data original.
+        /// </summary>
+        /// <param name="sourceDataOriginal">The source data original.</param>
+        /// <param name="sort">The sort.</param>
+        /// <returns></returns>
+        private static DataTable Sort(DataTable sourceDataOriginal, string sort)
+        {
+            DataSet resultData = new DataSet();
+            sourceDataOriginal.DefaultView.Sort = sort;
+            resultData.Tables.Add(sourceDataOriginal.DefaultView.ToTable());
+            sourceDataOriginal = null;
+            return resultData.Tables[0];
+        }
+
+
+        /// <summary>
+        /// Creates the data set.
+        /// </summary>
+        /// <param name="ie">The ie.</param>
+        /// <param name="useFirstRow">if set to <c>true</c> [use first row].</param>
+        /// <param name="FileCultureInfo">The file culture information.</param>
+        /// <returns></returns>
+        private System.Data.DataSet CreateDataSet(IEnumerable<DataSetDataRowItem> ie, bool useFirstRowForColumnNames, CultureInfo FileCultureInfo)
+        {
+            DataSet dataset = new DataSet("CSVDATA");
+            dataset.Locale = FileCultureInfo;
+            DataTable table = new DataTable("CSV");
+            table.Locale = FileCultureInfo;
+
+            if (useFirstRowForColumnNames)
+            {
+                var e = ie.First();
+                for (int index = 0; index < e.Count; index++)
+                {
+                    if (e[index] != null && e[index].Value.Length > 0)
+                        table.Columns.Add(e[index].Value);
+                    else
+                        table.Columns.Add(string.Format("COLUMN{0:D4}", index));
+                }
+            } else
+            {
+                var e = ie.First();
+                for (int index = 0; index < e.Count; index++)
+                {
+                   table.Columns.Add(string.Format("COLUMN{0:D4}", index));
+                }
+            }
+
+            foreach (var item in ie)
+            {
+                if (useFirstRowForColumnNames)
+                {
+                    useFirstRowForColumnNames = false;
+                    continue;
+                }
+                System.Data.DataRow row = table.NewRow();
+                for (int index = 0; index < item.Count; index++)
+                {
+                    row[index] = item[index].Value;
+                }
+                table.Rows.Add(row);
+            }
+
+            dataset.Tables.Add(table);
+            return dataset;
+        }
+
+
         /// ///////////////////////////////////////////////////////////////////////
         /// ReadData
         /// <summary>
@@ -96,7 +356,14 @@ namespace LINQtoCSV
 
             if (!readingRawDataRows)
             {
+                if (fileDescription.SkipFirstLine && fileDescription.FirstLineHasColumnNames)
+                {
+                    throw new BadFirstLineHasColumnNamesValueException();
+                }
+
                 fm = new FieldMapper_Reading<T>(fileDescription, fileName, false);
+
+
             }
 
             // -------
@@ -166,10 +433,10 @@ namespace LINQtoCSV
                     {
                         continue;
                     }
-
-                    if (firstRow && fileDescription.FirstLineHasColumnNames)
+                    //Martin Holden 30-OCT-2014 - Add additional check for SkipFirstLine property, and only read column headers if the FirstLineHadColumns is true
+                    if ((firstRow && fileDescription.FirstLineHasColumnNames) || (firstRow && fileDescription.SkipFirstLine))
                     {
-                        if (!readingRawDataRows) { fm.ReadNames(row); }
+                        if (!readingRawDataRows && fileDescription.FirstLineHasColumnNames) { fm.ReadNames(row); }
                     }
                     else
                     {
@@ -273,7 +540,10 @@ namespace LINQtoCSV
             if (fileDescription.FirstLineHasColumnNames)
             {
                 fm.WriteNames(row);
+                if (!fileDescription.SkipFirstLine)
+                {
                 cs.WriteRow(row, fileDescription.QuoteAllFields);
+                }
             }
 
             // -----

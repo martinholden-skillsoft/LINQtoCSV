@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LINQtoCSV")]
 [assembly: AssemblyDescription("Popular, easy to use library to read and write CSV and tab delimited files. Supports data fields containing commas and line breaks. Supports different character encodings, separator characters and date and number formats. Robust error handling lets you quickly fix problems in large input files.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Matt Perdeck")]
+[assembly: AssemblyCompany("Matt Perdeck (Addition for SkipFirstLine adn AsDataSet by Martin Holden")]
 [assembly: AssemblyProduct("LINQtoCSV")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.5.0.0")]
-[assembly: AssemblyFileVersion("1.5.0.0")]
+[assembly: AssemblyVersion("1.5.1.1")]
+[assembly: AssemblyFileVersion("1.5.1.1")]

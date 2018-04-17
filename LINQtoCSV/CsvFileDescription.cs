@@ -40,6 +40,12 @@ namespace LINQtoCSV
         //
         public bool FirstLineHasColumnNames { get; set; }
 
+        //Martin Holden 30-OCT-2014
+        // If true, then:
+        // When reading a file, the first line is skipped
+        //
+        public bool SkipFirstLine { get; set; }
+
         // If true, only public fields and properties with the
         // [CsvColumn] attribute are recognized.
         // If false, all public fields and properties are used.
@@ -112,6 +118,7 @@ namespace LINQtoCSV
             UseFieldIndexForReadingData = false;
             UseOutputFormatForParsingCsvValue = false;
             IgnoreUnknownColumns = false;
+            SkipFirstLine = false;
         }
     }
 }

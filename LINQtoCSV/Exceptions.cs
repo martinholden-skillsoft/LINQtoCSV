@@ -69,6 +69,26 @@ namespace LINQtoCSV
         }
     }
 
+    //Martin Holden 30-OCT-2014
+    /// <summary>
+    /// CsvFileDescription.FirstLineHasColumnNames is true, and 
+    /// CsvFileDescription.SkipFirstLine is true then the settings contradict.
+    /// 
+    /// When this inconsistency within the CsvFileDescription object is detected,
+    /// this exception is thrown.
+    /// </summary>
+    public class BadFirstLineHasColumnNamesValueException : LINQtoCSVException
+    {
+        public BadFirstLineHasColumnNamesValueException() :
+            base(
+                "CsvFileDescription.FirstLineHasColumnNames is true, but needs to be false because " +
+                "CsvFileDescription.SkipFirstLine is true. See the description for BadFirstLineHasColumnNamesValueException.")
+        {
+        }
+    }
+
+
+
     /// <summary>
     /// Thrown when 2 or more fields or properties have the same FieldIndex in the CsvColumn attribute.
     /// </summary>
