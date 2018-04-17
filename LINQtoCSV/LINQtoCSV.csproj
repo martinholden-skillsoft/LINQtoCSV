@@ -81,6 +81,7 @@
     <Compile Include="CsvStream.cs" />
     <Compile Include="DataRow.cs" />
     <Compile Include="DataRowItem.cs" />
+    <Compile Include="DataSetDataRowItem.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="FieldMapper.cs" />
     <Compile Include="IDataRow.cs" />
